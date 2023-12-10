@@ -1,0 +1,27 @@
+1. Create two topics:
+
+ docker exec -ti broker /usr/bin/kafka-topics --create --bootstrap-server localhost:9092 --topic TextLinesTopic --partitions 10
+ 
+ docker exec -ti broker /usr/bin/kafka-topics --create --bootstrap-server localhost:9092 --topic UppercasedTextLinesTopic --partitions 10
+ 
+2. Produce some low-case values into TextLinesTopic
+
+docker exec -ti broker /usr/bin/kafka-console-producer --topic TextLinesTopic --bootstrap-server broker:19092
+
+3. Run KSQL or through Control Center
+
+docker  exec -ti ksqldb-cli ksql  http://ksqldb-server:8088  
+
+4. Run the commands inside KSQL
+
+SET 'auto.offset.reset'='earliest';
+
+CREATE STREAM TextLinesTopic (line VARCHAR) WITH (KAFKA_TOPIC='TextLinesTopic', VALUE_FORMAT='KAFKA'); 
+
+SELECT * FROM TextLinesTopic EMIT CHANGES;
+
+SELECT Ucase(line) FROM TextLinesTopic EMIT CHANGES;
+
+CREATE STREAM UppercasedTextLinesTopic WITH (KAFKA_TOPIC='UppercasedTextLinesTopic',  VALUE_FORMAT='KAFKA') AS SELECT Ucase(line) FROM TextLinesTopic;
+
+5. Check UppercasedTextLinesTopic topic;
