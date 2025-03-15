@@ -2,13 +2,14 @@
 
 http://localhost:9021
 
-2. In schema registry container produce avro messages
+2. Create a topic with a name customers and register the schema
 
-docker exec -ti schema-registry /usr/bin/kafka-avro-console-producer --bootstrap-server broker:19092 --topic customers  --property schema.registry.url=http://schema-registry:8081 --property value.schema='{"type":"record","name":"customer","fields":[{"name":"id","type":"int"},{"name":"name","type":"string"}]}'
+{"type":"record","name":"customer","fields":[{"name":"id","type":"int"},{"name":"name","type":"string"}]}
 
+3. Send messages
 
 {"id": 1, "name": "Jane Doe"}
 {"id": 2, "name": "John Smith"}
 {"id": 3, "name": "Ann Black"}
 
-3. Check the table in http://localhost:8080
+4. Check the table in http://localhost:8080
